@@ -1,0 +1,35 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+ion-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+ion-card-title {
+  text-align: center;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.logo-container img {
+  width: 150px;
+  height: auto;
+}
+
+/* ✅ BOTÓN VERDE */
+.register-button {
+  --background: #25cf84;
+  --color: white;
+  margin-top: 20px;
+  border-radius: 25px;
+  font-weight: bold;
+}

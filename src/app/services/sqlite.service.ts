@@ -36,6 +36,21 @@ export class SqliteService {
     console.log('SQLite inicializado correctamente');
   }
 
+  async registerUser(correo: string, contrasenia: string): Promise<boolean> {
+  const sql = `
+    INSERT INTO usuarios (correo, contrasenia)
+    VALUES (?, ?)
+  `;
+  try {
+    await this.db.run(sql, [correo, contrasenia]);
+    return true;
+  } catch (error) {
+    console.error('Error registrando usuario', error);
+    return false;
+  }
+}
+
+
   private async createTables() {
     const sql = `
       CREATE TABLE IF NOT EXISTS users (
