@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router'; // 👈 Asegurar ambos aquí
+import { Router, ActivatedRoute } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
   IonBackButton, IonItem, IonLabel, IonInput, IonSelect,
@@ -31,22 +31,19 @@ export class AddMovimientoPage implements OnInit {
   fecha: string = new Date().toISOString();
   descripcion: string = '';
   categorias: any[] = [];
-  tipo: 'INGRESO' | 'GASTO' = 'INGRESO'; // 👈 Variable para controlar el tipo
+  tipo: 'INGRESO' | 'GASTO' = 'INGRESO';
 
   constructor(
     private sqliteService: SqliteService,
     private router: Router,
-    private route: ActivatedRoute // 👈 1. Inyectar ActivatedRoute
+    private route: ActivatedRoute
   ) { }
 
   async ngOnInit() {
-    // 2. Leer el parámetro 'tipo' que viene del Dashboard
     const tipoParam = this.route.snapshot.queryParamMap.get('tipo');
     if (tipoParam === 'GASTO' || tipoParam === 'INGRESO') {
       this.tipo = tipoParam;
     }
-
-    // 3. Cargar categorías filtradas por ese tipo
     await this.cargarCategorias();
   }
 
@@ -57,8 +54,6 @@ export class AddMovimientoPage implements OnInit {
 
   async guardar() {
     const userId = localStorage.getItem('userId');
-
-    // 1. Validaciones básicas
     if (!userId) {
       alert('Sesión no encontrada. Por favor inicie sesión de nuevo.');
       this.router.navigate(['/login']);
@@ -71,7 +66,6 @@ export class AddMovimientoPage implements OnInit {
     }
 
     try {
-      // 2. Ejecutar la inserción en la base de datos
       const res = await this.sqliteService.addMovimiento(
         this.monto,
         this.fecha,
@@ -81,8 +75,6 @@ export class AddMovimientoPage implements OnInit {
         Number(userId)
       );
 
-      // 3. Si tuvo éxito, volver al Dashboard
-      // Nota: addMovimiento en tu servicio devuelve el resultado de db.run()
       if (res) {
         console.log('✅ Movimiento guardado con éxito');
         this.router.navigate(['/dashboard']);

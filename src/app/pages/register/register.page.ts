@@ -31,7 +31,6 @@ export class RegisterPage {
   }
 
   async onRegister() {
-    // 1. Verificar que no sean undefined antes de enviar
     if (!this.nombre || !this.correo || !this.contrasenia) {
       alert('Por favor rellena todos los campos');
       return;

@@ -47,3 +47,27 @@ ion-tab-bar {
   --background: #fff;
   border-top: 1px solid #ddd;
 }
+
+ion-tab-bar {
+  --border: none;
+  --background: #ffffff;
+  height: 65px;
+}
+
+.actions-container {
+  margin-top: 20px;
+  padding: 0 10px;
+  
+  .action-btn {
+    --border-radius: 10px;
+    height: 50px;
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+}
+
+.divider {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.5);
+  margin: 5px 0;
+}

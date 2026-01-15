@@ -1,0 +1,59 @@
+.gray-bg {
+  --background: #f4f4f4;
+}
+
+.transparent-list {
+  background: transparent;
+}
+
+.movimiento-card {
+  background: white;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.icon-bg-up,
+.icon-bg-down {
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+}
+
+.icon-bg-up {
+  background-color: #62b87f;
+}
+
+// Verde de la imagen
+.icon-bg-down {
+  background-color: #f66d6d;
+}
+
+// Rojo de la imagen
+
+.categoria-titulo {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 2px;
+}
+
+.monto-texto {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.fecha-texto {
+  font-size: 0.85rem;
+  color: #a0a0a0; 
+  margin: 0;
+}
+
+[slot="start"] {
+  margin-inline-end: 16px;
+}

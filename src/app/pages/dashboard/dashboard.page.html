@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-button color="success">Atrás</ion-button>
     </ion-buttons>
-    <ion-title class="ion-text-center">Inicio</ion-title>
+    <ion-title class="ion-text-center">Dashboard</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -46,21 +46,22 @@
   </div>
 </ion-content>
 
-<ion-footer>
-  <ion-tabs>
-    <ion-tab-bar slot="bottom">
-      <ion-tab-button tab="movimientos">
-        <ion-icon name="document-text-outline"></ion-icon>
-        <ion-label>Movimientos</ion-label>
-      </ion-tab-button>
-      <ion-tab-button tab="reporte">
-        <ion-icon name="list-outline"></ion-icon>
-        <ion-label>Reporte Mensual</ion-label>
-      </ion-tab-button>
-      <ion-tab-button tab="graficos">
-        <ion-icon name="pie-chart-outline"></ion-icon>
-        <ion-label>Gráficos</ion-label>
-      </ion-tab-button>
-    </ion-tab-bar>
-  </ion-tabs>
+<ion-footer class="ion-no-border">
+  <ion-tab-bar slot="bottom">
+
+    <ion-tab-button (click)="goToPage('movimientos')">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label>Movimientos</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button (click)="goToPage('reporte')">
+      <ion-icon name="list-outline"></ion-icon>
+      <ion-label>Reporte Mensual</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button (click)="goToPage('graficos')">
+      <ion-icon name="pie-chart-outline"></ion-icon>
+      <ion-label>Gráficos</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
 </ion-footer>

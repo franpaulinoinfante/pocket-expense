@@ -27,7 +27,7 @@
   }
 
   .custom-item {
-    --background: #f1f3f5; // Gris claro de la imagen
+    --background: #f1f3f5;
     --border-radius: 15px;
     --padding-start: 15px;
     margin-bottom: 15px;
@@ -60,7 +60,7 @@
       color: #000;
       
       .highlight {
-        color: #2dd36f; // Verde Success de Ionic
+        color: #2dd36f;
       }
     }
   }

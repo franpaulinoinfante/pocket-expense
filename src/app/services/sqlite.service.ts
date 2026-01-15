@@ -19,10 +19,6 @@ export class SqliteService {
     }
   }
 
-  // En SqliteService.ts
-
-  // En app/services/sqlite.service.ts
-
   async init() {
     if (this.initialized) return;
 
@@ -33,18 +29,14 @@ export class SqliteService {
     }
 
     try {
-      // 1. Verificar si ya existe una conexión activa con ese nombre
       const connections = await this.sqlite.isConnection('pocket_expense_db', false);
 
       if (connections.result) {
-        // 2. Si existe, la recuperamos del pool de conexiones
         this.db = await this.sqlite.retrieveConnection('pocket_expense_db', false);
       } else {
-        // 3. Si no existe, la creamos desde cero
         this.db = await this.sqlite.createConnection('pocket_expense_db', false, 'no-encryption', 1, false);
       }
 
-      // 4. Asegurarnos de que esté abierta antes de proceder
       const isOpen = await this.db.isDBOpen();
       if (!isOpen.result) {
         await this.db.open();
@@ -52,18 +44,16 @@ export class SqliteService {
 
       await this.createTables();
       this.initialized = true;
-      this.resolveReady(); // 🔓 Esto libera los botones del Login
+      this.resolveReady();
       console.log('✅ SQLite Sincronizado correctamente');
     } catch (error) {
       console.error('❌ Error crítico en Init:', error);
-      // Opcional: podrías intentar cerrar y reabrir aquí en caso de error persistente
     }
   }
 
 
   async loginUser(correo: string, contrasenia: string) {
     await this.isReady;
-    // IMPORTANTE: SELECT para consultar, no INSERT
     const sql = `SELECT * FROM usuarios WHERE correo = ? AND contrasenia = ? LIMIT 1`;
     try {
       const res = await this.db.query(sql, [correo, contrasenia]);
@@ -79,7 +69,6 @@ export class SqliteService {
   async registerUser(nombre: string = '', correo: string = '', contrasenia: string = '') {
     await this.isReady;
 
-    // Validación interna de seguridad
     if (!correo || !contrasenia) {
       return { success: false, message: 'Correo y contraseña son obligatorios' };
     }
@@ -111,7 +100,6 @@ export class SqliteService {
       const ingresos = ingresosRes.values?.[0]?.total || 0;
       const gastos = gastosRes.values?.[0]?.total || 0;
 
-      // ✅ IMPORTANTE: Retornar el objeto con los nombres exactos
       return {
         ingresos: ingresos,
         gastos: gastos,
@@ -135,20 +123,20 @@ export class SqliteService {
     return res.values || [];
   }
 
-async addMovimiento(monto: number, fecha: string, descripcion: string, categoria_id: number, tipo: string, usuario_id: number) {
-  await this.isReady;
-  const sql = `INSERT INTO movimientos (monto, fecha, descripcion, categoria_id, tipo, usuario_id) VALUES (?, ?, ?, ?, ?, ?)`;
-  try {
-    const result = await this.db.run(sql, [monto, fecha, descripcion, categoria_id, tipo, usuario_id]);
-    return (result?.changes?.changes ?? 0) > 0;// ✅ Retorna true si se insertó
-  } catch (error) {
-    console.error('Error detallado en addMovimiento:', error);
-    return false;
+  async addMovimiento(monto: number, fecha: string, descripcion: string, categoria_id: number, tipo: string, usuario_id: number) {
+    await this.isReady;
+    const sql = `INSERT INTO movimientos (monto, fecha, descripcion, categoria_id, tipo, usuario_id) VALUES (?, ?, ?, ?, ?, ?)`;
+    try {
+      const result = await this.db.run(sql, [monto, fecha, descripcion, categoria_id, tipo, usuario_id]);
+      return (result?.changes?.changes ?? 0) > 0;
+    } catch (error) {
+      console.error('Error detallado en addMovimiento:', error);
+      return false;
+    }
   }
-}
 
   async getCategoriasPorTipo(tipo: string) {
-    await this.isReady; // 👈 CRÍTICO: Esperar a que la DB esté abierta
+    await this.isReady;
     try {
       const res = await this.db.query('SELECT * FROM categorias WHERE tipo = ?', [tipo]);
       return res.values || [];
@@ -159,7 +147,6 @@ async addMovimiento(monto: number, fecha: string, descripcion: string, categoria
   }
 
   private async createTables() {
-    // Sincronizado exactamente con tu script SQL
     const sql = `
       CREATE TABLE IF NOT EXISTS usuarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

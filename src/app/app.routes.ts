@@ -26,27 +26,9 @@ export const routes: Routes = [
   {
     path: 'add-movimiento',
     loadComponent: () => import('./pages/add-movimiento/add-movimiento.page').then( m => m.AddMovimientoPage)
+  },
+  {
+    path: 'movimientos',
+    loadComponent: () => import('./pages/movimientos/movimientos.page').then( m => m.MovimientosPage)
   }
 ];
-
-
-// import { Routes } from '@angular/router';
-
-// export const routes: Routes = [
-//   {
-//     path: 'home',
-//     loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
-//   },
-//   {
-//     path: '',
-//     redirectTo: 'home',
-//     pathMatch: 'full',
-//   },
-//   {
-//     path: '',
-//     redirectTo: 'register',
-//     pathMatch: 'full',
-//     // path: 'register',
-//     // loadComponent: () => import('./pages/register/register.page').then( m => m.RegisterPage)
-//   },
-// ];

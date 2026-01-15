@@ -1,0 +1,50 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard" text="Atrás" color="success"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Movimientos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="success">Editar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding gray-bg">
+  <ion-list *ngIf="isLoading">
+    <ion-item *ngFor="let i of [1,2,3,4,5]" lines="none" class="movimiento-card">
+      <ion-thumbnail slot="start">
+        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+      </ion-thumbnail>
+      <ion-label>
+        <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+        <ion-skeleton-text [animated]="true" style="width: 40%"></ion-skeleton-text>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list *ngIf="!isLoading" lines="none" class="transparent-list">
+    <div *ngFor="let mov of movimientos" class="movimiento-card">
+      <ion-item lines="none">
+        <div slot="start" [class]="mov.tipo === 'INGRESO' ? 'icon-bg-up' : 'icon-bg-down'">
+          <ion-icon [name]="mov.tipo === 'INGRESO' ? 'arrow-up-outline' : 'arrow-down-outline'"></ion-icon>
+        </div>
+
+        <ion-label>
+          <h2 class="categoria-titulo">{{ mov.categoria_nombre }}</h2>
+          <p class="fecha-texto">{{ mov.fecha | date:'dd/MM/yyyy' }}</p>
+        </ion-label>
+
+        <ion-text slot="end" [color]="mov.tipo === 'INGRESO' ? 'success' : 'danger'">
+          <h3 class="monto-texto">
+            {{ mov.tipo === 'INGRESO' ? '+' : '-' }}${{ mov.monto | number:'1.2-2' }}
+          </h3>
+        </ion-text>
+      </ion-item>
+    </div>
+
+    <div *ngIf="movimientos.length === 0" class="ion-text-center ion-padding">
+      <p>No hay movimientos registrados.</p>
+    </div>
+  </ion-list>
+</ion-content>
