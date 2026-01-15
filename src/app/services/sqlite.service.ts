@@ -19,27 +19,47 @@ export class SqliteService {
     }
   }
 
+  // En SqliteService.ts
+
+  // En app/services/sqlite.service.ts
+
   async init() {
     if (this.initialized) return;
 
     if (Capacitor.getPlatform() !== 'android') {
-      console.warn('SQLite no disponible en navegador');
       this.initialized = true;
-      this.resolveReady(); // 👈 Abrimos la llave aunque sea navegador para no bloquear la app
+      this.resolveReady();
       return;
     }
 
     try {
-      this.db = await this.sqlite.createConnection('pocket_expense_db', false, 'no-encryption', 1, false);
-      await this.db.open();
+      // 1. Verificar si ya existe una conexión activa con ese nombre
+      const connections = await this.sqlite.isConnection('pocket_expense_db', false);
+
+      if (connections.result) {
+        // 2. Si existe, la recuperamos del pool de conexiones
+        this.db = await this.sqlite.retrieveConnection('pocket_expense_db', false);
+      } else {
+        // 3. Si no existe, la creamos desde cero
+        this.db = await this.sqlite.createConnection('pocket_expense_db', false, 'no-encryption', 1, false);
+      }
+
+      // 4. Asegurarnos de que esté abierta antes de proceder
+      const isOpen = await this.db.isDBOpen();
+      if (!isOpen.result) {
+        await this.db.open();
+      }
+
       await this.createTables();
       this.initialized = true;
-      this.resolveReady(); // ✅ Llave abierta en Android
-      console.log('✅ SQLite Listo');
+      this.resolveReady(); // 🔓 Esto libera los botones del Login
+      console.log('✅ SQLite Sincronizado correctamente');
     } catch (error) {
-      console.error('❌ Error Init:', error);
+      console.error('❌ Error crítico en Init:', error);
+      // Opcional: podrías intentar cerrar y reabrir aquí en caso de error persistente
     }
   }
+
 
   async loginUser(correo: string, contrasenia: string) {
     await this.isReady;
@@ -76,22 +96,22 @@ export class SqliteService {
       return { success: false, message: error.message || 'Error desconocido' };
     }
   }
-
-  async getResumenFinanciero() {
+  async getResumenFinanciero(usuario_id: number) {
     await this.isReady;
     try {
-      // Obtenemos la suma de ingresos
       const ingresosRes = await this.db.query(
-        `SELECT SUM(monto) as total FROM movimientos WHERE tipo = 'INGRESO'`
+        `SELECT SUM(monto) as total FROM movimientos WHERE tipo = 'INGRESO' AND usuario_id = ?`,
+        [usuario_id]
       );
-      // Obtenemos la suma de gastos
       const gastosRes = await this.db.query(
-        `SELECT SUM(monto) as total FROM movimientos WHERE tipo = 'GASTO'`
+        `SELECT SUM(monto) as total FROM movimientos WHERE tipo = 'GASTO' AND usuario_id = ?`,
+        [usuario_id]
       );
 
       const ingresos = ingresosRes.values?.[0]?.total || 0;
       const gastos = gastosRes.values?.[0]?.total || 0;
 
+      // ✅ IMPORTANTE: Retornar el objeto con los nombres exactos
       return {
         ingresos: ingresos,
         gastos: gastos,
@@ -102,23 +122,39 @@ export class SqliteService {
       return { ingresos: 0, gastos: 0, balance: 0 };
     }
   }
-  
-  // Obtener categorías por tipo (INGRESO o GASTO)
-  async getCategoriasPorTipo(tipo: 'INGRESO' | 'GASTO') {
+
+  async getMovimientos(usuario_id: number) {
     await this.isReady;
-    const res = await this.db.query('SELECT * FROM categorias WHERE tipo = ?', [tipo]);
+    const sql = `
+    SELECT m.*, c.nombre as categoria_nombre 
+    FROM movimientos m
+    LEFT JOIN categorias c ON m.categoria_id = c.id
+    WHERE m.usuario_id = ? -- 👈 Filtrar por usuario
+    ORDER BY m.fecha DESC`;
+    const res = await this.db.query(sql, [usuario_id]);
     return res.values || [];
   }
 
-  // Guardar nuevo movimiento
-  async addMovimiento(monto: number, fecha: string, descripcion: string, categoria_id: number, tipo: 'INGRESO' | 'GASTO') {
-    await this.isReady;
-    const sql = `INSERT INTO movimientos (monto, fecha, descripcion, categoria_id, tipo) VALUES (?, ?, ?, ?, ?)`;
+async addMovimiento(monto: number, fecha: string, descripcion: string, categoria_id: number, tipo: string, usuario_id: number) {
+  await this.isReady;
+  const sql = `INSERT INTO movimientos (monto, fecha, descripcion, categoria_id, tipo, usuario_id) VALUES (?, ?, ?, ?, ?, ?)`;
+  try {
+    const result = await this.db.run(sql, [monto, fecha, descripcion, categoria_id, tipo, usuario_id]);
+    return (result?.changes?.changes ?? 0) > 0;// ✅ Retorna true si se insertó
+  } catch (error) {
+    console.error('Error detallado en addMovimiento:', error);
+    return false;
+  }
+}
+
+  async getCategoriasPorTipo(tipo: string) {
+    await this.isReady; // 👈 CRÍTICO: Esperar a que la DB esté abierta
     try {
-      await this.db.run(sql, [monto, fecha, descripcion, categoria_id, tipo]);
-      return { success: true };
-    } catch (error: any) {
-      return { success: false, message: error.message };
+      const res = await this.db.query('SELECT * FROM categorias WHERE tipo = ?', [tipo]);
+      return res.values || [];
+    } catch (e) {
+      console.error('Error cargando categorías', e);
+      return [];
     }
   }
 
@@ -131,11 +167,6 @@ export class SqliteService {
         correo TEXT NOT NULL UNIQUE,
         contrasenia TEXT NOT NULL
       );
-      CREATE TABLE IF NOT EXISTS categorias (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT NOT NULL UNIQUE,
-        tipo TEXT NOT NULL CHECK (tipo IN ('INGRESO', 'GASTO'))
-      );
       CREATE TABLE IF NOT EXISTS movimientos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         monto REAL NOT NULL,
@@ -143,8 +174,58 @@ export class SqliteService {
         descripcion TEXT,
         categoria_id INTEGER,
         tipo TEXT NOT NULL,
-        FOREIGN KEY(categoria_id) REFERENCES categorias(id)
+        usuario_id INTEGER, -- 👈 Nueva columna
+        FOREIGN KEY(categoria_id) REFERENCES categorias(id),
+        FOREIGN KEY(usuario_id) REFERENCES usuarios(id) -- 👈 Relación
       );
+      CREATE TABLE IF NOT EXISTS categorias (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nombre TEXT NOT NULL UNIQUE,
+        tipo TEXT NOT NULL CHECK (tipo IN ('INGRESO', 'GASTO'))
+      );
+      -- CATEGORÍAS DE INGRESO (20)
+      INSERT OR IGNORE INTO categorias(nombre, tipo) VALUES 
+      ('Sueldo', 'INGRESO'),
+      ('Salario', 'INGRESO'),
+      ('Honorarios', 'INGRESO'),
+      ('Comisiones', 'INGRESO'),
+      ('Ventas', 'INGRESO'),
+      ('Alquileres', 'INGRESO'),
+      ('Intereses Bancarios', 'INGRESO'),
+      ('Dividendos', 'INGRESO'),
+      ('Inversiones', 'INGRESO'),
+      ('Freelance', 'INGRESO'),
+      ('Bonificaciones', 'INGRESO'),
+      ('Aguinaldo', 'INGRESO'),
+      ('Premios', 'INGRESO'),
+      ('Reembolsos', 'INGRESO'),
+      ('Herencia', 'INGRESO'),
+      ('Regalos', 'INGRESO'),
+      ('Venta de Activos', 'INGRESO'),
+      ('Subsidios', 'INGRESO'),
+      ('Pensión', 'INGRESO'),
+      ('Becas', 'INGRESO');
+      INSERT OR IGNORE INTO categorias (nombre, tipo) VALUES 
+      ('Alquiler/Hipoteca', 'GASTO'),
+      ('Servicios (Luz, Agua, Gas)', 'GASTO'),
+      ('Supermercado', 'GASTO'),
+      ('Transporte', 'GASTO'),
+      ('Gasolina/Combustible', 'GASTO'),
+      ('Seguros', 'GASTO'),
+      ('Salud/Medicina', 'GASTO'),
+      ('Educación', 'GASTO'),
+      ('Internet', 'GASTO'),
+      ('Teléfono/Celular', 'GASTO'),
+      ('Entretenimiento', 'GASTO'),
+      ('Restaurantes', 'GASTO'),
+      ('Ropa/Calzado', 'GASTO'),
+      ('Mantenimiento Hogar', 'GASTO'),
+      ('Impuestos', 'GASTO'),
+      ('Deudas', 'GASTO'),
+      ('Gimnasio/Deporte', 'GASTO'),
+      ('Viajes/Vacaciones', 'GASTO'),
+      ('Regalos/Donaciones', 'GASTO'),
+      ('Gastos Personales', 'GASTO');
     `;
     await this.db.execute(sql);
   }

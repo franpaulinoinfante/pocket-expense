@@ -40,7 +40,10 @@ export class LoginPage {
   }
 
   async onLogin() {
+    
     console.log('1. Intentando Login con:', this.correo);
+    
+    
 
     if (this.correo && this.contrasenia) {
       try {

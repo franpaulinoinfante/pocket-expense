@@ -34,12 +34,15 @@
   </ion-grid>
 
   <div class="actions-container">
-    <ion-button expand="block" color="success" class="action-btn">
-      + Agregar Ingreso
-    </ion-button>
-    <ion-button expand="block" color="danger" class="action-btn">
-      - Agregar Gasto
-    </ion-button>
+    <div class="actions-container">
+      <ion-button expand="block" color="success" class="action-btn" (click)="goToAddMovimiento('INGRESO')">
+        + Agregar Ingreso
+      </ion-button>
+
+      <ion-button expand="block" color="danger" class="action-btn" (click)="goToAddMovimiento('GASTO')">
+        - Agregar Gasto
+      </ion-button>
+    </div>
   </div>
 </ion-content>
 
