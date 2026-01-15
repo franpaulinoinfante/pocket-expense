@@ -1,31 +1,76 @@
-.gray-bg { --background: #f0f0f0; }
+.gray-bg {
+  --background: #f8f9fa;
+}
+
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding-top: 10px;
+}
 
 .form-card {
   background: white;
-  border-radius: 12px;
-  padding: 10px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
+  border-radius: 16px;
+  padding: 15px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 
-.custom-input {
-  --background: transparent;
-  margin-bottom: 15px;
-  ion-label {
-    font-weight: bold;
-    color: #000;
-    margin-bottom: 8px !important;
+  .custom-input {
+    --background: transparent;
+    --padding-start: 5px;
+    margin-bottom: 20px;
+
+    ion-label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px !important;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    ion-input, ion-select, ion-textarea {
+      background: #f1f3f5;
+      border-radius: 12px;
+      padding: 12px 15px !important;
+      --padding-start: 15px;
+      font-size: 16px;
+    }
+    
+    .date-display {
+      background: #f1f3f5;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 8px;
+      font-size: 16px;
+      color: #333;
+    }
+  }
+
+  .amount-section {
+    .amount-input {
+      background: transparent;
+      font-size: 32px;
+      font-weight: 800;
+      color: #1c1c1e;
+      text-align: right;
+      --padding-end: 0;
+    }
+    
+    span {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2dd36f;
+      margin-right: 5px;
+    }
   }
 }
 
-.amount-input {
-  font-size: 24px;
-  text-align: right;
-  color: #999;
-}
-
 .save-btn {
-  --border-radius: 8px;
-  height: 50px;
-  font-weight: bold;
+  --border-radius: 14px;
+  height: 60px;
+  font-weight: 700;
+  font-size: 18px;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-transform: none;
 }

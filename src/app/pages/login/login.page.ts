@@ -7,7 +7,7 @@ import {
   IonText, IonIcon, AlertController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { closeOutline } from 'ionicons/icons';
+import { closeOutline, eyeOutline, eyeOffOutline } from 'ionicons/icons';
 import { SqliteService } from '../../services/sqlite.service';
 
 @Component({
@@ -15,69 +15,51 @@ import { SqliteService } from '../../services/sqlite.service';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonContent,
-    IonItem,
-    IonInput,
-    IonButton,
-    IonText,
-    IonIcon
-  ]
+  imports: [CommonModule, FormsModule, IonContent, IonItem, IonInput, IonButton, IonText, IonIcon]
 })
 export class LoginPage {
   correo = '';
   contrasenia = '';
+  showPassword = false;
 
   constructor(
     private sqliteService: SqliteService,
     private router: Router,
     private alertCtrl: AlertController
   ) {
-    addIcons({ closeOutline });
+    addIcons({ closeOutline, eyeOutline, eyeOffOutline });
   }
 
-  async onLogin() {    
-    console.log('1. Intentando Login con:', this.correo);  
+  async onLogin() {
+    if (!this.correo || !this.contrasenia) {
+      await this.displayAlert('Campos vacíos', 'Por favor ingresa tus credenciales.');
+      return;
+    }
 
-    if (this.correo && this.contrasenia) {
-      try {
-        console.log('2. Esperando al servicio (isReady)...');
-        const resultado = await this.sqliteService.loginUser(this.correo, this.contrasenia);
+    try {
+      const resultado = await this.sqliteService.loginUser(this.correo, this.contrasenia);
 
-        console.log('3. Respuesta recibida:', resultado);
-
-        if (resultado.success) {
-          console.log('4. ÉXITO: Redirigiendo a Dashboard');
-          localStorage.setItem('userId', resultado.user.id.toString());
-          this.router.navigate(['/dashboard']);
-        } else {
-          console.warn('4. FALLO:', resultado.message);
-          const alert = await this.alertCtrl.create({
-            header: 'Acceso Denegado',
-            message: resultado.message,
-            buttons: ['OK']
-          });
-          await alert.present();
-        }
-      } catch (e) {
-        console.error('Error inesperado en login.page:', e);
+      if (resultado.success && resultado.user) {
+        localStorage.setItem('userId', resultado.user.id.toString());
+        this.router.navigate(['/dashboard'], { replaceUrl: true });
+      } else {
+        await this.displayAlert('Acceso Denegado', resultado.message || 'Credenciales inválidas');
       }
-    } else {
-      alert('Campos vacíos');
+    } catch (e) {
+      console.error('Error en login:', e);
+      await this.displayAlert('Error', 'Ocurrió un error inesperado al conectar con la base de datos.');
     }
   }
 
-  goToDashboard()
-  {
-    this.router.navigate(['/dashboard']);
+  async displayAlert(header: string, message: string) {
+    const alert = await this.alertCtrl.create({
+      header,
+      message,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 
-  goToWelcome() {
-    this.router.navigate(['/register']);
-  }
-  
   goToRegister() {
     this.router.navigate(['/register']);
   }

@@ -1,8 +1,12 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button color="success">Atrás</ion-button>
+      <ion-button (click)="authService.confirmarLogout()" color="danger">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        Logout
+      </ion-button>
     </ion-buttons>
+
     <ion-title class="ion-text-center">Dashboard</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -10,7 +14,7 @@
 <ion-content class="ion-padding gray-bg">
   <div class="balance-card">
     <p class="label">Balance General</p>
-    <h1 class="amount">${{ totalSaldo.toLocaleString() }}</h1>
+    <h1 class="amount">${{ totalSaldo | number:'1.2-2' }}</h1>
     <p class="sub-label">Saldo Disponible</p>
   </div>
 
@@ -20,35 +24,32 @@
         <div class="stat-box income">
           <h3>Ingresos</h3>
           <hr>
-          <p class="stat-amount">${{ totalIngresos.toLocaleString() }}</p>
+          <p class="stat-amount">${{ totalIngresos | number:'1.2-2' }}</p>
         </div>
       </ion-col>
       <ion-col size="6">
         <div class="stat-box expense">
           <h3>Gastos</h3>
           <hr>
-          <p class="stat-amount">${{ totalGastos.toLocaleString() }}</p>
+          <p class="stat-amount">${{ totalGastos | number:'1.2-2' }}</p>
         </div>
       </ion-col>
     </ion-row>
   </ion-grid>
 
   <div class="actions-container">
-    <div class="actions-container">
-      <ion-button expand="block" color="success" class="action-btn" (click)="goToAddMovimiento('INGRESO')">
-        + Agregar Ingreso
-      </ion-button>
+    <ion-button expand="block" color="success" class="action-btn" (click)="goToAddMovimiento('INGRESO')">
+      + Agregar Ingreso
+    </ion-button>
 
-      <ion-button expand="block" color="danger" class="action-btn" (click)="goToAddMovimiento('GASTO')">
-        - Agregar Gasto
-      </ion-button>
-    </div>
+    <ion-button expand="block" color="danger" class="action-btn" (click)="goToAddMovimiento('GASTO')">
+      - Agregar Gasto
+    </ion-button>
   </div>
 </ion-content>
 
 <ion-footer class="ion-no-border">
   <ion-tab-bar slot="bottom">
-
     <ion-tab-button (click)="goToPage('movimientos')">
       <ion-icon name="person-outline"></ion-icon>
       <ion-label>Movimientos</ion-label>
@@ -56,7 +57,7 @@
 
     <ion-tab-button (click)="goToPage('reporte')">
       <ion-icon name="list-outline"></ion-icon>
-      <ion-label>Reporte Mensual</ion-label>
+      <ion-label>Reporte</ion-label>
     </ion-tab-button>
 
     <ion-tab-button (click)="goToPage('graficos')">

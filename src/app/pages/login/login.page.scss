@@ -1,9 +1,11 @@
 .login-container {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 100%;
   padding: 20px;
   background: #ffffff;
+  max-width: 500px; /* Limita el ancho en tablets para mejor lectura */
+  margin: 0 auto;
 
   .header-actions {
     display: flex;
@@ -11,19 +13,19 @@
     .close-icon {
       font-size: 32px;
       color: #333;
+      cursor: pointer;
     }
   }
 
   h1 {
     font-size: 32px;
     font-weight: bold;
-    margin-top: 40px;
-    margin-bottom: 30px;
+    margin: 40px 0 30px;
     color: #000;
   }
 
   .input-group {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
 
   .custom-item {
@@ -38,16 +40,15 @@
       font-size: 16px;
     }
 
-    .show-btn {
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
+    ion-button {
+      --padding-end: 10px;
+      margin: 0;
     }
   }
 
   .logo-section {
     text-align: center;
-    margin: 40px 0;
+    margin: 30px 0;
     
     img {
       width: 80px;
@@ -57,7 +58,7 @@
     .brand-name {
       font-size: 24px;
       font-weight: bold;
-      color: #000;
+      color: #003366;
       
       .highlight {
         color: #2dd36f;
@@ -66,25 +67,32 @@
   }
 
   .login-btn {
-    --border-radius: 15px;
+    --border-radius: 30px;
     --background: #2dd36f;
-    height: 55px;
+    --box-shadow: 0 4px 12px rgba(45, 211, 111, 0.3);
+    height: 60px;
     font-weight: bold;
     text-transform: none;
     font-size: 18px;
+    margin-top: 10px;
   }
 
   .forgot-text {
     text-align: center;
     color: #6c757d;
-    margin-top: 20px;
+    margin-top: 25px;
     font-size: 14px;
+    cursor: pointer;
   }
 
   .register-link {
     text-align: center;
-    margin-top: auto;
-    padding-bottom: 20px;
-    font-size: 14px;
+    margin-top: 40px;
+    font-size: 15px;
+    
+    ion-text {
+      font-weight: bold;
+      cursor: pointer;
+    }
   }
 }

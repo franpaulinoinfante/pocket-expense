@@ -4,11 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   IonContent, IonItem, IonInput, IonButton,
-  IonText, IonIcon, IonHeader, IonToolbar, IonTitle
+  IonText, IonIcon
 } from '@ionic/angular/standalone';
 import { SqliteService } from '../../services/sqlite.service';
 import { addIcons } from 'ionicons';
-import { closeOutline } from 'ionicons/icons';
+import { closeOutline, eyeOutline, eyeOffOutline } from 'ionicons/icons';
 import { AlertController } from '@ionic/angular/standalone';
 
 @Component({
@@ -22,17 +22,19 @@ export class RegisterPage {
   nombre = '';
   correo = '';
   contrasenia = '';
+  showPassword = false;
+
   constructor(
     private sqliteService: SqliteService,
     private router: Router,
-    private alertCtrl: AlertController // Inyectar
+    private alertCtrl: AlertController
   ) {
-    addIcons({ closeOutline });
+    addIcons({ closeOutline, eyeOutline, eyeOffOutline });
   }
 
   async onRegister() {
     if (!this.nombre || !this.correo || !this.contrasenia) {
-      alert('Por favor rellena todos los campos');
+      await this.displayAlert('Campos incompletos', 'Por favor rellena todos los campos para continuar.');
       return;
     }
 
@@ -44,14 +46,14 @@ export class RegisterPage {
       );
 
       if (resultado && resultado.success) {
-        alert('¡Registro exitoso!');
+        await this.displayAlert('¡Éxito!', 'Tu cuenta ha sido creada correctamente.');
         this.router.navigate(['/login']);
       } else {
-        alert(resultado?.message || 'Error al registrar');
+        await this.displayAlert('Error', resultado?.message || 'No se pudo completar el registro.');
       }
     } catch (err) {
-      console.error('Error en la llamada:', err);
-      alert('Ocurrió un error inesperado');
+      console.error('Error en registro:', err);
+      await this.displayAlert('Error Crítico', 'Ocurrió un error inesperado al conectar con la base de datos.');
     }
   }
 
@@ -59,12 +61,12 @@ export class RegisterPage {
     const alert = await this.alertCtrl.create({
       header: title,
       message: message,
-      buttons: ['OK']
+      buttons: ['Aceptar']
     });
+    await alert.present();
   }
 
   goToLogin() {
     this.router.navigate(['/login']);
   }
-
 }

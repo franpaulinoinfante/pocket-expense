@@ -1,37 +1,38 @@
 <ion-content class="ion-padding">
   <div class="login-container">
-    
+
     <div class="header-actions">
-      <ion-icon name="close-outline" class="close-icon" (click)="goToWelcome()"></ion-icon>
+      <ion-icon name="close-outline" class="close-icon" (click)="goToRegister()"></ion-icon>
     </div>
 
     <h1>Iniciar Sesión</h1>
 
     <div class="input-group">
       <ion-item lines="none" class="custom-item">
-        <ion-input type="email" placeholder="Correo" [(ngModel)]="correo"></ion-input>
+        <ion-input type="email" placeholder="Correo electrónico" [(ngModel)]="correo"></ion-input>
       </ion-item>
 
       <ion-item lines="none" class="custom-item">
-        <ion-input type="password" placeholder="Contraseña" [(ngModel)]="contrasenia"></ion-input>
-        <ion-text color="success" slot="end" class="show-btn">Mostrar</ion-text>
+        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Contraseña" [(ngModel)]="contrasenia"></ion-input>
+        <ion-button slot="end" fill="clear" color="success" (click)="showPassword = !showPassword">
+          <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+        </ion-button>
       </ion-item>
     </div>
 
     <div class="logo-section">
-      <img src="assets/icon/logo.png" alt="Logo PocketExpense" />
+      <img src="assets/icon/logo.png" alt="Logo Pocket Expense" />
       <h2 class="brand-name">Pocket<span class="highlight">Expense</span></h2>
     </div>
 
     <ion-button expand="block" class="login-btn" (click)="onLogin()">
-      Iniciar Sesión
+      Ingresar
     </ion-button>
 
-    <p class="forgot-text">Olvidar contraseña</p>
-    
+    <p class="forgot-text">¿Olvidaste tu contraseña?</p>
+
     <div class="register-link">
-      <span>¿No tienes cuenta? </span>
-      <ion-text color="success" (click)="goToRegister()"><b>Regístrate</b></ion-text>
+      <p>¿No tienes cuenta? <ion-text color="success" (click)="goToRegister()">Regístrate</ion-text></p>
     </div>
   </div>
 </ion-content>

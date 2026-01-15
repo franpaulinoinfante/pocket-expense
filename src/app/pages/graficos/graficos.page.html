@@ -1,0 +1,28 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard" text="Volver" color="success"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Análisis de Gastos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding gray-bg">
+  <div class="main-container">
+    
+    <div class="chart-card">
+      <h3>Comparativa Mensual</h3>
+      <div class="canvas-wrapper">
+        <canvas #barCanvas></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3>Distribución por Categoría</h3>
+      <div class="canvas-wrapper">
+        <canvas #pieCanvas></canvas>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

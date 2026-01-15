@@ -1,29 +1,38 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/dashboard" text="Atrás" color="success"></ion-back-button>
+      <ion-back-button defaultHref="/dashboard" text="Dashboard" color="success"></ion-back-button>
     </ion-buttons>
-    <ion-title>Movimientos</ion-title>
+    <ion-title>Historial</ion-title>
     <ion-buttons slot="end">
-      <ion-button color="success">Editar</ion-button>
+      <ion-button (click)="toggleEditMode()" [color]="editMode ? 'danger' : 'success'">
+        <ion-icon [name]="editMode ? 'close-circle-outline' : 'create-outline'" slot="icon-only"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding gray-bg">
-  <ion-list *ngIf="isLoading">
-    <ion-item *ngFor="let i of [1,2,3,4,5]" lines="none" class="movimiento-card">
-      <ion-thumbnail slot="start">
-        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-      </ion-thumbnail>
-      <ion-label>
-        <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
-        <ion-skeleton-text [animated]="true" style="width: 40%"></ion-skeleton-text>
-      </ion-label>
-    </ion-item>
+  
+  <ion-list *ngIf="isLoading" class="transparent-list">
+    <div *ngFor="let i of [1,2,3,4,5,6]" class="movimiento-card">
+      <ion-item lines="none">
+        <ion-thumbnail slot="start" style="--border-radius: 8px;">
+          <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+        </ion-thumbnail>
+        <ion-label>
+          <ion-skeleton-text [animated]="true" style="width: 70%"></ion-skeleton-text>
+          <ion-skeleton-text [animated]="true" style="width: 40%"></ion-skeleton-text>
+        </ion-label>
+      </ion-item>
+    </div>
   </ion-list>
 
-  <ion-list *ngIf="!isLoading" lines="none" class="transparent-list">
+  <ion-list *ngIf="!isLoading" class="transparent-list">
+    <div *ngIf="movimientos.length === 0" class="ion-text-center empty-state">
+      <p>No hay movimientos registrados.</p>
+    </div>
+
     <div *ngFor="let mov of movimientos" class="movimiento-card">
       <ion-item lines="none">
         <div slot="start" [class]="mov.tipo === 'INGRESO' ? 'icon-bg-up' : 'icon-bg-down'">
@@ -32,19 +41,19 @@
 
         <ion-label>
           <h2 class="categoria-titulo">{{ mov.categoria_nombre }}</h2>
-          <p class="fecha-texto">{{ mov.fecha | date:'dd/MM/yyyy' }}</p>
+          <p class="fecha-texto">{{ mov.fecha | date:'dd MMM yyyy' }}</p>
         </ion-label>
 
-        <ion-text slot="end" [color]="mov.tipo === 'INGRESO' ? 'success' : 'danger'">
-          <h3 class="monto-texto">
-            {{ mov.tipo === 'INGRESO' ? '+' : '-' }}${{ mov.monto | number:'1.2-2' }}
-          </h3>
-        </ion-text>
+        <div slot="end" class="amount-container">
+          <ion-text [color]="mov.tipo === 'INGRESO' ? 'success' : 'danger'" class="monto-texto">
+            {{ mov.tipo === 'INGRESO' ? '+' : '-' }} ${{ mov.monto | number:'1.2-2' }}
+          </ion-text>
+          
+          <ion-button *ngIf="editMode" fill="clear" color="danger" (click)="confirmarEliminacion(mov)">
+            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </div>
       </ion-item>
-    </div>
-
-    <div *ngIf="movimientos.length === 0" class="ion-text-center ion-padding">
-      <p>No hay movimientos registrados.</p>
     </div>
   </ion-list>
 </ion-content>

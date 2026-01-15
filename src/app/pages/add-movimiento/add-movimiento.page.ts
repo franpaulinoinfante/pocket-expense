@@ -6,7 +6,7 @@ import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
   IonBackButton, IonItem, IonLabel, IonInput, IonSelect,
   IonSelectOption, IonModal, IonDatetime,
-  IonTextarea, IonButton
+  IonTextarea, IonButton, AlertController
 } from '@ionic/angular/standalone';
 import { SqliteService } from '../../services/sqlite.service';
 
@@ -17,16 +17,13 @@ import { SqliteService } from '../../services/sqlite.service';
   standalone: true,
   providers: [DatePipe],
   imports: [
-    CommonModule,
-    FormsModule,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonButtons,
-    IonBackButton, IonItem, IonLabel, IonInput, IonSelect,
-    IonSelectOption, IonModal, IonDatetime,
-    IonTextarea, IonButton
+    CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, IonContent, 
+    IonButtons, IonBackButton, IonItem, IonLabel, IonInput, IonSelect,
+    IonSelectOption, IonModal, IonDatetime, IonTextarea, IonButton
   ]
 })
 export class AddMovimientoPage implements OnInit {
-  monto: number = 0;
+  monto: number | null = null;
   categoriaId: number = 0;
   fecha: string = new Date().toISOString();
   descripcion: string = '';
@@ -36,7 +33,8 @@ export class AddMovimientoPage implements OnInit {
   constructor(
     private sqliteService: SqliteService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private alertCtrl: AlertController
   ) { }
 
   async ngOnInit() {
@@ -48,20 +46,23 @@ export class AddMovimientoPage implements OnInit {
   }
 
   async cargarCategorias() {
-    this.categorias = await this.sqliteService.getCategoriasPorTipo(this.tipo);
-    console.log(`Categorías de ${this.tipo} cargadas:`, this.categorias);
+    try {
+      this.categorias = await this.sqliteService.getCategoriasPorTipo(this.tipo);
+    } catch (error) {
+      console.error('Error cargando categorías:', error);
+    }
   }
 
   async guardar() {
     const userId = localStorage.getItem('userId');
+    
     if (!userId) {
-      alert('Sesión no encontrada. Por favor inicie sesión de nuevo.');
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login'], { replaceUrl: true });
       return;
     }
 
-    if (this.monto <= 0 || !this.categoriaId) {
-      alert('Por favor, ingrese un monto válido y seleccione una categoría.');
+    if (!this.monto || this.monto <= 0 || !this.categoriaId) {
+      await this.mostrarAlerta('Datos incompletos', 'Por favor, ingresa un monto válido y selecciona una categoría.');
       return;
     }
 
@@ -76,12 +77,19 @@ export class AddMovimientoPage implements OnInit {
       );
 
       if (res) {
-        console.log('✅ Movimiento guardado con éxito');
         this.router.navigate(['/dashboard']);
       }
     } catch (error) {
-      console.error('❌ Error al guardar:', error);
-      alert('No se pudo guardar el movimiento.');
+      await this.mostrarAlerta('Error', 'No se pudo guardar el movimiento. Revisa la conexión con la base de datos.');
     }
+  }
+
+  async mostrarAlerta(header: string, message: string) {
+    const alert = await this.alertCtrl.create({
+      header,
+      message,
+      buttons: ['Aceptar']
+    });
+    await alert.present();
   }
 }

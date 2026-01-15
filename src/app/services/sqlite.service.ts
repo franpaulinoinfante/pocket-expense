@@ -27,7 +27,6 @@ export class SqliteService {
       this.resolveReady();
       return;
     }
-
     try {
       const connections = await this.sqlite.isConnection('pocket_expense_db', false);
 
@@ -51,18 +50,17 @@ export class SqliteService {
     }
   }
 
-
   async loginUser(correo: string, contrasenia: string) {
     await this.isReady;
-    const sql = `SELECT * FROM usuarios WHERE correo = ? AND contrasenia = ? LIMIT 1`;
+    const sql = `SELECT id, nombre, correo FROM usuarios WHERE correo = ? AND contrasenia = ? LIMIT 1`;
     try {
       const res = await this.db.query(sql, [correo, contrasenia]);
       if (res.values && res.values.length > 0) {
         return { success: true, user: res.values[0] };
       }
-      return { success: false, message: 'Usuario no encontrado' };
+      return { success: false, message: 'Credenciales incorrectas' };
     } catch (error: any) {
-      return { success: false, message: 'Error: ' + error.message };
+      return { success: false, message: 'Error de conexión' };
     }
   }
 
@@ -85,6 +83,7 @@ export class SqliteService {
       return { success: false, message: error.message || 'Error desconocido' };
     }
   }
+
   async getResumenFinanciero(usuario_id: number) {
     await this.isReady;
     try {
@@ -143,6 +142,60 @@ export class SqliteService {
     } catch (e) {
       console.error('Error cargando categorías', e);
       return [];
+    }
+  }
+
+  async getGastosPorCategoria(usuario_id: number) {
+    await this.isReady;
+    // Consultamos el total agrupado por el nombre de la categoría
+    const sql = `
+    SELECT c.nombre as categoria, SUM(m.monto) as total
+    FROM movimientos m
+    INNER JOIN categorias c ON m.categoria_id = c.id
+    WHERE m.usuario_id = ? AND m.tipo = 'GASTO'
+    GROUP BY c.nombre
+    ORDER BY total DESC`;
+
+    try {
+      const res = await this.db.query(sql, [usuario_id]);
+      return res.values || [];
+    } catch (error) {
+      console.error('Error al obtener gastos por categoría:', error);
+      return [];
+    }
+  }
+
+  async getReporteMensual(usuario_id: number, mes: number, anio: number) {
+    await this.isReady;
+    const sql = `
+    SELECT m.*, c.nombre as categoria_nombre 
+    FROM movimientos m
+    LEFT JOIN categorias c ON m.categoria_id = c.id
+    WHERE m.usuario_id = ? 
+    AND strftime('%m', m.fecha) = ? 
+    AND strftime('%Y', m.fecha) = ?
+    ORDER BY m.fecha DESC`;
+
+    const mesFormateado = mes < 10 ? `0${mes}` : `${mes}`;
+
+    try {
+      const res = await this.db.query(sql, [usuario_id, mesFormateado, anio.toString()]);
+      return res.values || [];
+    } catch (error) {
+      console.error('Error en reporte mensual:', error);
+      return [];
+    }
+  }
+
+  async eliminarMovimiento(id: number) {
+    await this.isReady;
+    const sql = `DELETE FROM movimientos WHERE id = ?`;
+    try {
+      await this.db.run(sql, [id]);
+      return true;
+    } catch (error) {
+      console.error('Error al eliminar movimiento:', error);
+      return false;
     }
   }
 

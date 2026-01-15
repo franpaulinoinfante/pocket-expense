@@ -1,0 +1,65 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard" text="Volver" color="success"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Reporte Mensual</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding gray-bg">
+  <div class="report-container">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <ion-col size="7">
+          <ion-item class="select-item" lines="none">
+            <ion-select [(ngModel)]="mesSeleccionado" (ionChange)="cargarReporte()" interface="popover" label="Mes" labelPlacement="stacked">
+              <ion-select-option *ngFor="let m of meses" [value]="m.val">{{ m.nombre }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+        <ion-col size="5">
+          <ion-item class="select-item" lines="none">
+            <ion-select [(ngModel)]="anioSeleccionado" (ionChange)="cargarReporte()" interface="popover" label="Año" labelPlacement="stacked">
+              <ion-select-option [value]="2024">2024</ion-select-option>
+              <ion-select-option [value]="2025">2025</ion-select-option>
+              <ion-select-option [value]="2026">2026</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <div class="summary-card">
+      <div class="summary-row">
+        <span class="label">Total Ingresos</span>
+        <span class="val success-text">+ ${{ totalIngresos | number:'1.2-2' }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">Total Gastos</span>
+        <span class="val expense-text">- ${{ totalGastos | number:'1.2-2' }}</span>
+      </div>
+      <div class="balance-banner" [class.negative]="balanceMensual < 0">
+        <span>Balance Neto</span>
+        <span>${{ balanceMensual | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <h3 class="section-title">Detalles del Período</h3>
+    <div class="details-card">
+      <div *ngIf="movimientos.length === 0" class="empty-msg">
+        No hay registros para este período.
+      </div>
+      
+      <div *ngFor="let mov of movimientos" class="detail-item">
+        <div class="left-info">
+          <span class="cat-name">{{ mov.categoria_nombre }}</span>
+          <span class="date">{{ mov.fecha | date:'dd/MM' }}</span>
+        </div>
+        <span class="amount" [class.income]="mov.tipo === 'INGRESO'">
+          {{ mov.tipo === 'INGRESO' ? '+' : '-' }}${{ mov.monto | number:'1.2-2' }}
+        </span>
+      </div>
+    </div>
+  </div>
+</ion-content>

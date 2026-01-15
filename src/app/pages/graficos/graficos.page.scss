@@ -1,0 +1,52 @@
+/* graficos.page.scss */
+
+.gray-bg {
+  --background: #f8f9fa;
+}
+
+.main-container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+
+  h3 {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1c1c1e;
+    text-align: left;
+    border-left: 4px solid #34c759;
+    padding-left: 12px;
+  }
+}
+
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 350px; /* Altura fija para que el gráfico respire */
+  margin: 0 auto;
+}
+
+/* En tablets anchas, mostramos los gráficos lado a lado */
+@media (min-width: 992px) {
+  .main-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .chart-card {
+    flex: 1 1 400px; /* Crecen pero tienen un mínimo */
+  }
+}

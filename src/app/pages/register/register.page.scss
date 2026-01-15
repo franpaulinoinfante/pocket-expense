@@ -1,3 +1,5 @@
+/* register.page.scss */
+
 .register-container {
   display: flex;
   flex-direction: column;
@@ -16,7 +18,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  .close-icon { font-size: 30px; }
+  
+  .close-icon { 
+    font-size: 30px; 
+    cursor: pointer;
+    color: #333;
+  }
+}
+
+.input-group {
+  margin-bottom: 20px;
 }
 
 .custom-item {
@@ -25,31 +36,52 @@
   --padding-start: 15px;
   margin-bottom: 15px;
   height: 55px;
-}
+  
+  /* Ajuste para que el input ocupe el espacio correcto */
+  ion-input {
+    --padding-top: 10px;
+    --padding-bottom: 10px;
+  }
 
-.show-btn {
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
+  /* Estilo para el botón de mostrar contraseña */
+  ion-button {
+    --padding-start: 0;
+    --padding-end: 10px;
+    margin: 0;
+    height: 100%;
+    ion-icon {
+      font-size: 20px;
+    }
+  }
 }
 
 .logo-section {
   margin: 30px 0;
-  img { width: 90px; }
+  
+  img { 
+    width: 90px;
+    margin-bottom: 10px;
+  }
+  
   .brand-name {
     font-size: 24px;
     font-weight: bold;
     color: #003366;
-    .highlight { color: #25cf84; }
+    
+    .highlight { 
+      color: #25cf84; 
+    }
   }
 }
 
 .register-btn {
   --background: #63b37e;
   --border-radius: 30px;
+  --box-shadow: 0 4px 12px rgba(99, 179, 126, 0.3);
   height: 60px;
   font-size: 18px;
   margin-top: 10px;
+  font-weight: bold;
   text-transform: none;
 }
 
@@ -57,18 +89,18 @@
   color: #25cf84;
   margin-top: 25px;
   font-weight: 500;
+  cursor: pointer;
 }
 
-.login-link {
-  text-align: center;
-  margin-top: 25px;
-  font-size: 14px;
-  color: #6c757d;
+/* Soporte para pantallas más grandes (Tablets) */
+@media (min-width: 768px) {
+  .register-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding-top: 50px;
+  }
   
-  ion-text {
-    cursor: pointer;
-    &:hover {
-      text-decoration: underline;
-    }
+  .logo-section img {
+    width: 110px;
   }
 }

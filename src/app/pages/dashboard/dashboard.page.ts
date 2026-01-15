@@ -4,12 +4,13 @@ import { Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent,
   IonGrid, IonRow, IonCol, IonButton, IonButtons,
-  IonFooter, IonTabs, IonTabBar, IonTabButton,
+  IonFooter, IonTabBar, IonTabButton,
   IonIcon, IonLabel
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons'; 
-import { documentTextOutline, listOutline, pieChartOutline, personOutline } from 'ionicons/icons';
+import { listOutline, pieChartOutline, personOutline, logOutOutline } from 'ionicons/icons';
 import { SqliteService } from '../../services/sqlite.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +21,7 @@ import { SqliteService } from '../../services/sqlite.service';
     CommonModule,
     IonHeader, IonToolbar, IonTitle, IonContent,
     IonGrid, IonRow, IonCol, IonButton, IonButtons,
-    IonFooter, IonTabs, IonTabBar, IonTabButton,
+    IonFooter, IonTabBar, IonTabButton,
     IonIcon, IonLabel
   ]
 })
@@ -31,9 +32,10 @@ export class DashboardPage implements OnInit {
 
   constructor(
     private sqliteService: SqliteService,
-    private router: Router
+    private router: Router,
+    public authService: AuthService
   ) {
-    addIcons({ personOutline, listOutline, pieChartOutline, documentTextOutline });
+    addIcons({ logOutOutline, personOutline, listOutline, pieChartOutline });
   }
 
   async ngOnInit() {
@@ -44,41 +46,31 @@ export class DashboardPage implements OnInit {
     await this.cargarDatos();
   }
 
-
   async cargarDatos() {
     const userIdStr = localStorage.getItem('userId');
-
     if (!userIdStr) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login'], { replaceUrl: true });
       return;
     }
 
     const userId = Number(userIdStr);
-
     try {
       const resumen = await this.sqliteService.getResumenFinanciero(userId);
-
       if (resumen) {
-        this.totalIngresos = resumen.ingresos;
-        this.totalGastos = resumen.gastos;
-        this.totalSaldo = resumen.balance;
+        this.totalIngresos = resumen.ingresos || 0;
+        this.totalGastos = resumen.gastos || 0;
+        this.totalSaldo = resumen.balance || 0;
       }
     } catch (error) {
       console.error('Error cargando datos del dashboard:', error);
     }
   }
 
-  logout() {
-    localStorage.removeItem('userId');
-    this.router.navigate(['/login']);
+  goToAddMovimiento(tipo: string) {
+    this.router.navigate(['/add-movimiento'], { queryParams: { tipo } });
   }
 
   goToPage(page: string) {
     this.router.navigate([`/${page}`]);
-  }
-
-  goToAddMovimiento(tipo: string) {
-    console.log('Navegando a agregar:', tipo);
-    this.router.navigate(['/add-movimiento'], { queryParams: { tipo: tipo } });
   }
 }
