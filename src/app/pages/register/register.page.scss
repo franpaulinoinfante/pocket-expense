@@ -1,35 +1,74 @@
 .register-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-
-ion-card {
-  width: 100%;
-  max-width: 420px;
-}
-
-ion-card-title {
+  flex-direction: column;
+  padding: 10px 20px;
   text-align: center;
+
+  h1 {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 40px 0;
+    color: #000;
+  }
 }
 
-.logo-container {
+.header-actions {
   display: flex;
-  justify-content: center;
-  margin: 20px 0;
+  justify-content: space-between;
+  align-items: center;
+  .close-icon { font-size: 30px; }
 }
 
-.logo-container img {
-  width: 150px;
-  height: auto;
+.custom-item {
+  --background: #f1f3f5; // Gris claro
+  --border-radius: 15px; // Bordes redondeados
+  --padding-start: 15px;
+  margin-bottom: 15px;
+  height: 55px;
 }
 
-/* ✅ BOTÓN VERDE */
-.register-button {
-  --background: #25cf84;
-  --color: white;
-  margin-top: 20px;
-  border-radius: 25px;
-  font-weight: bold;
+.show-btn {
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.logo-section {
+  margin: 30px 0;
+  img { width: 90px; }
+  .brand-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: #003366;
+    .highlight { color: #25cf84; }
+  }
+}
+
+.register-btn {
+  --background: #63b37e;
+  --border-radius: 30px;
+  height: 60px;
+  font-size: 18px;
+  margin-top: 10px;
+  text-transform: none;
+}
+
+.forgot-text {
+  color: #25cf84;
+  margin-top: 25px;
+  font-weight: 500;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 25px;
+  font-size: 14px;
+  color: #6c757d;
+  
+  ion-text {
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

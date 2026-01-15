@@ -1,15 +1,28 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { RouteReuseStrategy } from '@angular/router';
+import { RouteReuseStrategy, provideRouter } from '@angular/router';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
+import { APP_INITIALIZER } from '@angular/core'; // Importar esto
 
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
-import { provideRouter } from '@angular/router';
+import { SqliteService } from './app/services/sqlite.service'; // Importar tu servicio
+
+// Función para inicializar SQLite al arrancar
+export function initializeApp(sqliteService: SqliteService) {
+  return () => sqliteService.init();
+}
 
 bootstrapApplication(AppComponent, {
   providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
     provideRouter(routes),
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    // Agregar este proveedor para arrancar la base de datos
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [SqliteService],
+      multi: true
+    },
   ],
 });

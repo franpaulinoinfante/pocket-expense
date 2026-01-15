@@ -1,0 +1,90 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  background: #ffffff;
+
+  .header-actions {
+    display: flex;
+    justify-content: flex-start;
+    .close-icon {
+      font-size: 32px;
+      color: #333;
+    }
+  }
+
+  h1 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-top: 40px;
+    margin-bottom: 30px;
+    color: #000;
+  }
+
+  .input-group {
+    margin-bottom: 30px;
+  }
+
+  .custom-item {
+    --background: #f1f3f5; // Gris claro de la imagen
+    --border-radius: 15px;
+    --padding-start: 15px;
+    margin-bottom: 15px;
+    height: 55px;
+
+    ion-input {
+      --placeholder-color: #adb5bd;
+      font-size: 16px;
+    }
+
+    .show-btn {
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  }
+
+  .logo-section {
+    text-align: center;
+    margin: 40px 0;
+    
+    img {
+      width: 80px;
+      margin-bottom: 10px;
+    }
+
+    .brand-name {
+      font-size: 24px;
+      font-weight: bold;
+      color: #000;
+      
+      .highlight {
+        color: #2dd36f; // Verde Success de Ionic
+      }
+    }
+  }
+
+  .login-btn {
+    --border-radius: 15px;
+    --background: #2dd36f;
+    height: 55px;
+    font-weight: bold;
+    text-transform: none;
+    font-size: 18px;
+  }
+
+  .forgot-text {
+    text-align: center;
+    color: #6c757d;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  .register-link {
+    text-align: center;
+    margin-top: auto;
+    padding-bottom: 20px;
+    font-size: 14px;
+  }
+}

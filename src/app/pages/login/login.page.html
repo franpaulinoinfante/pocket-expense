@@ -1,18 +1,13 @@
 <ion-content class="ion-padding">
-  <div class="register-container">
-
+  <div class="login-container">
+    
     <div class="header-actions">
-      <ion-icon name="close-outline" class="close-icon"></ion-icon>
-      <ion-button fill="clear" color="success" (click)="goToLogin()">Login</ion-button>
+      <ion-icon name="close-outline" class="close-icon" (click)="goToWelcome()"></ion-icon>
     </div>
 
-    <h1>Registrarse</h1>
+    <h1>Iniciar Sesión</h1>
 
     <div class="input-group">
-      <ion-item lines="none" class="custom-item">
-        <ion-input type="text" placeholder="Nombre" [(ngModel)]="nombre"></ion-input>
-      </ion-item>
-
       <ion-item lines="none" class="custom-item">
         <ion-input type="email" placeholder="Correo" [(ngModel)]="correo"></ion-input>
       </ion-item>
@@ -24,21 +19,19 @@
     </div>
 
     <div class="logo-section">
-      <img src="assets/icon/logo.png" alt="Logo" />
+      <img src="assets/icon/logo.png" alt="Logo PocketExpense" />
       <h2 class="brand-name">Pocket<span class="highlight">Expense</span></h2>
     </div>
 
-    <ion-button expand="block" class="register-btn" (click)="onRegister()">
-      Registrarse
+    <ion-button expand="block" class="login-btn" (click)="onLogin()">
+      Iniciar Sesión
     </ion-button>
 
-    <div class="login-link">
-      <span>¿Ya tienes una cuenta? </span>
-      <ion-text color="success" (click)="goToLogin()">
-        <b>Inicia Sesión</b>
-      </ion-text>
-    </div>
-
     <p class="forgot-text">Olvidar contraseña</p>
+    
+    <div class="register-link">
+      <span>¿No tienes cuenta? </span>
+      <ion-text color="success" (click)="goToRegister()"><b>Regístrate</b></ion-text>
+    </div>
   </div>
 </ion-content>
