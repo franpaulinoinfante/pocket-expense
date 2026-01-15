@@ -1,38 +1,41 @@
-<ion-content class="ion-padding">
-  <div class="login-container">
+<ion-content class="ion-padding gray-bg">
+  <div class="container-responsive">
+    <div class="login-container">
 
-    <div class="header-actions">
-      <ion-icon name="close-outline" class="close-icon" (click)="goToRegister()"></ion-icon>
-    </div>
+      <div class="header-actions">
+        <ion-icon name="close-outline" class="close-icon" (click)="goToRegister()"></ion-icon>
+      </div>
 
-    <h1>Iniciar Sesión</h1>
+      <h1>Iniciar Sesión</h1>
 
-    <div class="input-group">
-      <ion-item lines="none" class="custom-item">
-        <ion-input type="email" placeholder="Correo electrónico" [(ngModel)]="correo"></ion-input>
-      </ion-item>
+      <div class="input-group">
+        <ion-item lines="none" class="custom-item">
+          <ion-input type="email" placeholder="Correo electrónico" [(ngModel)]="correo"></ion-input>
+        </ion-item>
 
-      <ion-item lines="none" class="custom-item">
-        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Contraseña" [(ngModel)]="contrasenia"></ion-input>
-        <ion-button slot="end" fill="clear" color="success" (click)="showPassword = !showPassword">
-          <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
-        </ion-button>
-      </ion-item>
-    </div>
+        <ion-item lines="none" class="custom-item">
+          <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Contraseña" [(ngModel)]="contrasenia"></ion-input>
+          <ion-button slot="end" fill="clear" color="success" (click)="showPassword = !showPassword">
+            <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </div>
 
-    <div class="logo-section">
-      <img src="assets/icon/logo.png" alt="Logo Pocket Expense" />
-      <h2 class="brand-name">Pocket<span class="highlight">Expense</span></h2>
-    </div>
+      <div class="logo-section">
+        <img src="assets/icon/logo.png" alt="Logo Pocket Expense" />
+        <h2 class="brand-name">Pocket<span class="highlight">Expense</span></h2>
+      </div>
 
-    <ion-button expand="block" class="login-btn" (click)="onLogin()">
-      Ingresar
-    </ion-button>
+      <ion-button expand="block" class="login-btn" (click)="onLogin()">
+        Ingresar
+      </ion-button>
 
-    <p class="forgot-text">¿Olvidaste tu contraseña?</p>
+      <p class="forgot-text">¿Olvidaste tu contraseña?</p>
 
-    <div class="register-link">
-      <p>¿No tienes cuenta? <ion-text color="success" (click)="goToRegister()">Regístrate</ion-text></p>
+      <div class="register-link">
+        <p (click)="goToRegister()">¿No tienes cuenta? <span class="highlight">Regístrate</span></p>
+      </div>
+
     </div>
   </div>
 </ion-content>

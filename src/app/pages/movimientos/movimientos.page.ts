@@ -7,7 +7,16 @@ import {
 } from '@ionic/angular/standalone';
 import { SqliteService } from '../../services/sqlite.service';
 import { addIcons } from 'ionicons';
-import { arrowUpOutline, arrowDownOutline, trashOutline, createOutline, closeCircleOutline } from 'ionicons/icons';
+// Se agrega 'trash' a los imports para que coincida con tu addIcons y tu HTML
+import { 
+  arrowUpOutline, 
+  arrowDownOutline, 
+  trash, 
+  trashOutline, 
+  createOutline, 
+  closeCircleOutline, 
+  receiptOutline 
+} from 'ionicons/icons';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -31,7 +40,16 @@ export class MovimientosPage implements OnInit {
     private alertCtrl: AlertController,
     public authService: AuthService
   ) {
-    addIcons({ arrowUpOutline, arrowDownOutline, trashOutline, createOutline, closeCircleOutline });
+    // CORRECCIÓN: Ahora 'trash' sí existe porque lo importamos arriba
+    addIcons({
+      trash,
+      trashOutline,
+      receiptOutline,
+      arrowUpOutline,
+      arrowDownOutline,
+      createOutline,
+      closeCircleOutline
+    });
   }
 
   async ngOnInit() {
@@ -52,7 +70,6 @@ export class MovimientosPage implements OnInit {
         console.error('Error cargando movimientos:', error);
       }
     }
-    // Efecto visual suave para la carga
     setTimeout(() => { this.isLoading = false; }, 500);
   }
 

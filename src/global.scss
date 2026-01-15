@@ -35,3 +35,17 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+.container-responsive {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.gray-bg {
+  --background: #f8f9fa;
+}
+
+ion-item {
+  --border-radius: 12px;
+}

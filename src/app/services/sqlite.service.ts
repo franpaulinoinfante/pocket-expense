@@ -20,35 +20,70 @@ export class SqliteService {
   }
 
   async init() {
-    if (this.initialized) return;
+  if (this.initialized) return;
 
-    if (Capacitor.getPlatform() !== 'android') {
-      this.initialized = true;
-      this.resolveReady();
-      return;
-    }
-    try {
-      const connections = await this.sqlite.isConnection('pocket_expense_db', false);
+  // 1. Detectar plataforma
+  const platform = Capacitor.getPlatform();
 
-      if (connections.result) {
-        this.db = await this.sqlite.retrieveConnection('pocket_expense_db', false);
-      } else {
-        this.db = await this.sqlite.createConnection('pocket_expense_db', false, 'no-encryption', 1, false);
-      }
-
-      const isOpen = await this.db.isDBOpen();
-      if (!isOpen.result) {
-        await this.db.open();
-      }
-
-      await this.createTables();
-      this.initialized = true;
-      this.resolveReady();
-      console.log('✅ SQLite Sincronizado correctamente');
-    } catch (error) {
-      console.error('❌ Error crítico en Init:', error);
-    }
+  if (platform === 'web') {
+    console.log('Corriendo en Navegador: Modo Desarrollo');
+    // Aquí podrías configurar jeep-sqlite si quieres persistencia en web
+    this.initialized = true;
+    this.resolveReady();
+    return;
   }
+
+  // 2. Lógica para Dispositivos (Android/iOS)
+  try {
+    const connections = await this.sqlite.isConnection('pocket_expense_db', false);
+
+    if (connections.result) {
+      this.db = await this.sqlite.retrieveConnection('pocket_expense_db', false);
+    } else {
+      this.db = await this.sqlite.createConnection('pocket_expense_db', false, 'no-encryption', 1, false);
+    }
+
+    await this.db.open();
+    await this.createTables(); // Asegura que las tablas existan en el nuevo dispositivo
+    
+    this.initialized = true;
+    this.resolveReady();
+    console.log('Base de datos inicializada en dispositivo móvil');
+  } catch (error) {
+    console.error('Error inicializando SQLite en móvil:', error);
+  }
+}
+
+  // async init() {
+  //   if (this.initialized) return;
+
+  //   if (Capacitor.getPlatform() !== 'android') {
+  //     this.initialized = true;
+  //     this.resolveReady();
+  //     return;
+  //   }
+  //   try {
+  //     const connections = await this.sqlite.isConnection('pocket_expense_db', false);
+
+  //     if (connections.result) {
+  //       this.db = await this.sqlite.retrieveConnection('pocket_expense_db', false);
+  //     } else {
+  //       this.db = await this.sqlite.createConnection('pocket_expense_db', false, 'no-encryption', 1, false);
+  //     }
+
+  //     const isOpen = await this.db.isDBOpen();
+  //     if (!isOpen.result) {
+  //       await this.db.open();
+  //     }
+
+  //     await this.createTables();
+  //     this.initialized = true;
+  //     this.resolveReady();
+  //     console.log('✅ SQLite Sincronizado correctamente');
+  //   } catch (error) {
+  //     console.error('❌ Error crítico en Init:', error);
+  //   }
+  // }
 
   async loginUser(correo: string, contrasenia: string) {
     await this.isReady;

@@ -1,39 +1,40 @@
-<ion-content class="ion-padding">
-  <div class="register-container">
+<ion-content class="ion-padding gray-bg">
+  <div class="container-responsive">
+    <div class="register-container">
 
-    <div class="header-actions">
-      <ion-icon name="close-outline" class="close-icon" (click)="goToLogin()"></ion-icon>
-      <ion-button fill="clear" color="success" (click)="goToLogin()">Login</ion-button>
+      <div class="header-actions">
+        <ion-icon name="close-outline" class="close-icon" (click)="goToLogin()"></ion-icon>
+        <ion-button fill="clear" color="success" (click)="goToLogin()">Login</ion-button>
+      </div>
+
+      <h1>Registrarse</h1>
+
+      <div class="input-group">
+        <ion-item lines="none" class="custom-item">
+          <ion-input type="text" placeholder="Nombre completo" [(ngModel)]="nombre"></ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="custom-item">
+          <ion-input type="email" placeholder="Correo electrónico" [(ngModel)]="correo"></ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="custom-item">
+          <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Contraseña" [(ngModel)]="contrasenia"></ion-input>
+          <ion-button slot="end" fill="clear" color="success" (click)="showPassword = !showPassword">
+            <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </div>
+
+      <div class="logo-section">
+        <img src="assets/icon/logo.png" alt="Logo de Pocket Expense" />
+        <h2 class="brand-name">Pocket<span class="highlight">Expense</span></h2>
+      </div>
+
+      <ion-button expand="block" class="login-btn" (click)="onRegister()">
+        Crear cuenta
+      </ion-button>
+
     </div>
-
-    <h1>Registrarse</h1>
-
-    <div class="input-group">
-      <ion-item lines="none" class="custom-item">
-        <ion-input type="text" placeholder="Nombre completo" [(ngModel)]="nombre"></ion-input>
-      </ion-item>
-
-      <ion-item lines="none" class="custom-item">
-        <ion-input type="email" placeholder="Correo electrónico" [(ngModel)]="correo"></ion-input>
-      </ion-item>
-
-      <ion-item lines="none" class="custom-item">
-        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Contraseña" [(ngModel)]="contrasenia"></ion-input>
-        <ion-button slot="end" fill="clear" color="success" (click)="showPassword = !showPassword">
-          <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
-        </ion-button>
-      </ion-item>
-    </div>
-
-    <div class="logo-section">
-      <img src="assets/icon/logo.png" alt="Logo de Pocket Expense" />
-      <h2 class="brand-name">Pocket<span class="highlight">Expense</span></h2>
-    </div>
-
-    <ion-button expand="block" class="register-btn" (click)="onRegister()">
-      Registrarse
-    </ion-button>
-
-    <p class="forgot-text">¿Olvidaste tu contraseña?</p>
   </div>
 </ion-content>

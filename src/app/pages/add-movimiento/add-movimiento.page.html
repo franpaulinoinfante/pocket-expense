@@ -8,7 +8,8 @@
 </ion-header>
 
 <ion-content class="ion-padding gray-bg">
-  <div class="form-container">
+  <div class="container-responsive">
+    <div class="form-container">
     <div class="form-card">
       <ion-item lines="none" class="custom-input amount-section">
         <ion-label position="stacked">Monto</ion-label>
@@ -49,5 +50,6 @@
     <ion-button expand="block" [color]="tipo === 'INGRESO' ? 'success' : 'danger'" class="save-btn" (click)="guardar()">
       Guardar {{ tipo === 'INGRESO' ? 'Ingreso' : 'Gasto' }}
     </ion-button>
+  </div>
   </div>
 </ion-content>

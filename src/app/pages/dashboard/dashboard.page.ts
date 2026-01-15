@@ -8,7 +8,7 @@ import {
   IonIcon, IonLabel
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons'; 
-import { listOutline, pieChartOutline, personOutline, logOutOutline } from 'ionicons/icons';
+import { listOutline, pieChartOutline, personOutline, logOutOutline, documentTextOutline } from 'ionicons/icons';
 import { SqliteService } from '../../services/sqlite.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -35,7 +35,7 @@ export class DashboardPage implements OnInit {
     private router: Router,
     public authService: AuthService
   ) {
-    addIcons({ logOutOutline, personOutline, listOutline, pieChartOutline });
+    addIcons({logOutOutline,listOutline,pieChartOutline,documentTextOutline,personOutline});
   }
 
   async ngOnInit() {
