@@ -31,7 +31,7 @@ import { AuthService } from '../../services/auth.service';
   ]
 })
 export class MovimientosPage implements OnInit {
-  movimientos: any[] = [];
+  movements: any[] = [];
   isLoading = true;
   editMode = false;
 
@@ -53,19 +53,19 @@ export class MovimientosPage implements OnInit {
   }
 
   async ngOnInit() {
-    await this.cargarMovimientos();
+    await this.displayMovements();
   }
 
   async ionViewWillEnter() {
-    await this.cargarMovimientos();
+    await this.displayMovements();
   }
 
-  async cargarMovimientos() {
+  async displayMovements() {
     this.isLoading = true;
     const userId = localStorage.getItem('userId');
     if (userId) {
       try {
-        this.movimientos = await this.sqliteService.getMovimientos(Number(userId));
+        this.movements = await this.sqliteService.getMovementsByUserId(Number(userId));
       } catch (error) {
         console.error('Error cargando movimientos:', error);
       }
@@ -77,19 +77,19 @@ export class MovimientosPage implements OnInit {
     this.editMode = !this.editMode;
   }
 
-  async confirmarEliminacion(mov: any) {
+  async removeMovement(movement: any) {
     const alert = await this.alertCtrl.create({
       header: 'Eliminar Registro',
-      message: `¿Estás seguro de borrar "${mov.categoria_nombre}" por $${mov.monto}?`,
+      message: `¿Estás seguro de borrar "${movement.categoria_nombre}" por $${movement.monto}?`,
       buttons: [
         { text: 'Cancelar', role: 'cancel' },
         {
           text: 'Eliminar',
           role: 'destructive',
           handler: async () => {
-            const success = await this.sqliteService.eliminarMovimiento(mov.id);
+            const success = await this.sqliteService.removeMovement(movement.id);
             if (success) {
-              this.movimientos = this.movimientos.filter(m => m.id !== mov.id);
+              this.movements = this.movements.filter(m => m.id !== movement.id);
             }
           }
         }

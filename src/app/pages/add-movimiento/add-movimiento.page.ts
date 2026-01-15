@@ -23,12 +23,12 @@ import { SqliteService } from '../../services/sqlite.service';
   ]
 })
 export class AddMovimientoPage implements OnInit {
-  monto: number | null = null;
-  categoriaId: number = 0;
-  fecha: string = new Date().toISOString();
-  descripcion: string = '';
-  categorias: any[] = [];
-  tipo: 'INGRESO' | 'GASTO' = 'INGRESO';
+  amount: number | null = null;
+  categoryId: number = 0;
+  date: string = new Date().toISOString();
+  description: string = '';
+  categories: any[] = [];
+  types: 'INGRESO' | 'GASTO' = 'INGRESO';
 
   constructor(
     private sqliteService: SqliteService,
@@ -40,51 +40,49 @@ export class AddMovimientoPage implements OnInit {
   async ngOnInit() {
     const tipoParam = this.route.snapshot.queryParamMap.get('tipo');
     if (tipoParam === 'GASTO' || tipoParam === 'INGRESO') {
-      this.tipo = tipoParam;
+      this.types = tipoParam;
     }
-    await this.cargarCategorias();
+    await this.loadCategories();
   }
 
-  async cargarCategorias() {
+  async loadCategories() {
     try {
-      this.categorias = await this.sqliteService.getCategoriasPorTipo(this.tipo);
+      this.categories = await this.sqliteService.getCategoruesByType(this.types);
     } catch (error) {
       console.error('Error cargando categorías:', error);
     }
   }
 
-  async guardar() {
+  async addMovement() {
     const userId = localStorage.getItem('userId');
     
     if (!userId) {
       this.router.navigate(['/login'], { replaceUrl: true });
       return;
     }
-
-    if (!this.monto || this.monto <= 0 || !this.categoriaId) {
-      await this.mostrarAlerta('Datos incompletos', 'Por favor, ingresa un monto válido y selecciona una categoría.');
+    if (!this.amount || this.amount <= 0 || !this.categoryId) {
+      await this.displayAlert('Datos incompletos', 'Por favor, ingresa un monto válido y selecciona una categoría.');
       return;
     }
-
     try {
-      const res = await this.sqliteService.addMovimiento(
-        this.monto,
-        this.fecha,
-        this.descripcion,
-        this.categoriaId,
-        this.tipo,
+      const result = await this.sqliteService.addMovement(
+        this.amount,
+        this.date,
+        this.description,
+        this.categoryId,
+        this.types,
         Number(userId)
       );
 
-      if (res) {
+      if (result) {
         this.router.navigate(['/dashboard']);
       }
     } catch (error) {
-      await this.mostrarAlerta('Error', 'No se pudo guardar el movimiento. Revisa la conexión con la base de datos.');
+      await this.displayAlert('Error', 'No se pudo guardar el movimiento. Revisa la conexión con la base de datos.');
     }
   }
 
-  async mostrarAlerta(header: string, message: string) {
+  async displayAlert(header: string, message: string) {
     const alert = await this.alertCtrl.create({
       header,
       message,

@@ -37,14 +37,12 @@ export class RegisterPage {
       await this.displayAlert('Campos incompletos', 'Por favor rellena todos los campos para continuar.');
       return;
     }
-
     try {
       const resultado = await this.sqliteService.registerUser(
         this.nombre,
         this.correo,
         this.contrasenia
       );
-
       if (resultado && resultado.success) {
         await this.displayAlert('¡Éxito!', 'Tu cuenta ha sido creada correctamente.');
         this.router.navigate(['/login']);

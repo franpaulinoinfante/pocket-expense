@@ -29,30 +29,30 @@ export class GraficosPage {
   constructor(private sqliteService: SqliteService) {}
 
   async ionViewDidEnter() {
-    await this.cargarGraficos();
+    await this.displayGraphics();
   }
 
-  async cargarGraficos() {
+  async displayGraphics() {
     const userId = localStorage.getItem('userId');
     if (!userId) return;
 
     try {
-      const datos = await this.sqliteService.getResumenFinanciero(Number(userId));
-      const gastosPorCat = await this.sqliteService.getGastosPorCategoria(Number(userId));
+      const datos = await this.sqliteService.getFinancialSummaryByUserId(Number(userId));
+      const gastosPorCat = await this.sqliteService.getExpensesByCategories(Number(userId));
 
       if (datos) {
-        this.generarBarChart(datos.ingresos || 0, datos.gastos || 0);
+        this.generateBarChart(datos.income || 0, datos.expenses || 0);
       }
       
       if (gastosPorCat) {
-        this.generarPieChart(gastosPorCat);
+        this.generatePieChart(gastosPorCat);
       }
     } catch (error) {
       console.error('Error al cargar datos para gráficos:', error);
     }
   }
 
-  generarBarChart(ingresos: number, gastos: number) {
+  generateBarChart(ingresos: number, gastos: number) {
     if (this.barChart) this.barChart.destroy();
 
     this.barChart = new Chart(this.barCanvas.nativeElement, {
@@ -61,7 +61,7 @@ export class GraficosPage {
         labels: ['Ingresos', 'Gastos'],
         datasets: [{
           data: [ingresos, gastos],
-          backgroundColor: ['#34c759', '#ff3b30'], // Verde y Rojo iOS
+          backgroundColor: ['#34c759', '#ff3b30'],
           borderRadius: 8,
           barThickness: 50
         }]
@@ -80,11 +80,11 @@ export class GraficosPage {
     });
   }
 
-  generarPieChart(datos: any[]) {
+  generatePieChart(datos: any[]) {
     if (this.pieChart) this.pieChart.destroy();
 
     this.pieChart = new Chart(this.pieCanvas.nativeElement, {
-      type: 'doughnut', // Cambiado a dona para un look más moderno
+      type: 'doughnut',
       data: {
         labels: datos.map(d => d.categoria),
         datasets: [{

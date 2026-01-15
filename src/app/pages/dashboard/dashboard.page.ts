@@ -26,9 +26,9 @@ import { AuthService } from '../../services/auth.service';
   ]
 })
 export class DashboardPage implements OnInit {
-  totalSaldo = 0;
-  totalIngresos = 0;
-  totalGastos = 0;
+  balanceIncome = 0;
+  totalIncome = 0;
+  incomeExpenses = 0;
 
   constructor(
     private sqliteService: SqliteService,
@@ -39,27 +39,26 @@ export class DashboardPage implements OnInit {
   }
 
   async ngOnInit() {
-    await this.cargarDatos();
+    await this.loadData();
   }
 
   async ionViewWillEnter() {
-    await this.cargarDatos();
+    await this.loadData();
   }
 
-  async cargarDatos() {
+  async loadData() {
     const userIdStr = localStorage.getItem('userId');
     if (!userIdStr) {
       this.router.navigate(['/login'], { replaceUrl: true });
       return;
     }
-
     const userId = Number(userIdStr);
     try {
-      const resumen = await this.sqliteService.getResumenFinanciero(userId);
-      if (resumen) {
-        this.totalIngresos = resumen.ingresos || 0;
-        this.totalGastos = resumen.gastos || 0;
-        this.totalSaldo = resumen.balance || 0;
+      const summary = await this.sqliteService.getFinancialSummaryByUserId(userId);
+      if (summary) {
+        this.totalIncome = summary.income || 0;
+        this.incomeExpenses = summary.expenses || 0;
+        this.balanceIncome = summary.balance || 0;
       }
     } catch (error) {
       console.error('Error cargando datos del dashboard:', error);

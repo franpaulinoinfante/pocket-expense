@@ -35,7 +35,6 @@ export class LoginPage {
       await this.displayAlert('Campos vacíos', 'Por favor ingresa tus credenciales.');
       return;
     }
-
     try {
       const resultado = await this.sqliteService.loginUser(this.correo, this.contrasenia);
 
