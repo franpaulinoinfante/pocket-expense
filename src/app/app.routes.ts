@@ -22,6 +22,10 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadComponent: () => import('./pages/dashboard/dashboard.page').then( m => m.DashboardPage)
+  },
+  {
+    path: 'add-movimiento',
+    loadComponent: () => import('./pages/add-movimiento/add-movimiento.page').then( m => m.AddMovimientoPage)
   }
 ];
 

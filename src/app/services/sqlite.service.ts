@@ -77,6 +77,51 @@ export class SqliteService {
     }
   }
 
+  async getResumenFinanciero() {
+    await this.isReady;
+    try {
+      // Obtenemos la suma de ingresos
+      const ingresosRes = await this.db.query(
+        `SELECT SUM(monto) as total FROM movimientos WHERE tipo = 'INGRESO'`
+      );
+      // Obtenemos la suma de gastos
+      const gastosRes = await this.db.query(
+        `SELECT SUM(monto) as total FROM movimientos WHERE tipo = 'GASTO'`
+      );
+
+      const ingresos = ingresosRes.values?.[0]?.total || 0;
+      const gastos = gastosRes.values?.[0]?.total || 0;
+
+      return {
+        ingresos: ingresos,
+        gastos: gastos,
+        balance: ingresos - gastos
+      };
+    } catch (error) {
+      console.error('Error al calcular balance:', error);
+      return { ingresos: 0, gastos: 0, balance: 0 };
+    }
+  }
+  
+  // Obtener categorías por tipo (INGRESO o GASTO)
+  async getCategoriasPorTipo(tipo: 'INGRESO' | 'GASTO') {
+    await this.isReady;
+    const res = await this.db.query('SELECT * FROM categorias WHERE tipo = ?', [tipo]);
+    return res.values || [];
+  }
+
+  // Guardar nuevo movimiento
+  async addMovimiento(monto: number, fecha: string, descripcion: string, categoria_id: number, tipo: 'INGRESO' | 'GASTO') {
+    await this.isReady;
+    const sql = `INSERT INTO movimientos (monto, fecha, descripcion, categoria_id, tipo) VALUES (?, ?, ?, ?, ?)`;
+    try {
+      await this.db.run(sql, [monto, fecha, descripcion, categoria_id, tipo]);
+      return { success: true };
+    } catch (error: any) {
+      return { success: false, message: error.message };
+    }
+  }
+
   private async createTables() {
     // Sincronizado exactamente con tu script SQL
     const sql = `

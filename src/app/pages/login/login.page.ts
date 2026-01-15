@@ -39,36 +39,43 @@ export class LoginPage {
     addIcons({ closeOutline });
   }
 
- async onLogin() {
-  console.log('1. Intentando Login con:', this.correo);
-  
-  if (this.correo && this.contrasenia) {
-    try {
-      console.log('2. Esperando al servicio (isReady)...');
-      const resultado = await this.sqliteService.loginUser(this.correo, this.contrasenia);
-      
-      console.log('3. Respuesta recibida:', resultado);
-      
-      if (resultado.success) {
-        console.log('4. ÉXITO: Redirigiendo a home');
-        localStorage.setItem('userId', resultado.user.id.toString());
-        this.router.navigate(['/home']); 
-      } else {
-        console.warn('4. FALLO:', resultado.message);
-        const alert = await this.alertCtrl.create({
-          header: 'Acceso Denegado',
-          message: resultado.message,
-          buttons: ['OK']
-        });
-        await alert.present();
+  async onLogin() {
+    console.log('1. Intentando Login con:', this.correo);
+
+    if (this.correo && this.contrasenia) {
+      try {
+        console.log('2. Esperando al servicio (isReady)...');
+        const resultado = await this.sqliteService.loginUser(this.correo, this.contrasenia);
+
+        console.log('3. Respuesta recibida:', resultado);
+
+        if (resultado.success) {
+          console.log('4. ÉXITO: Redirigiendo a Dashboard');
+          localStorage.setItem('userId', resultado.user.id.toString());
+
+          // Cambiamos 'home' por 'dashboard'
+          this.router.navigate(['/dashboard']);
+        } else {
+          console.warn('4. FALLO:', resultado.message);
+          const alert = await this.alertCtrl.create({
+            header: 'Acceso Denegado',
+            message: resultado.message,
+            buttons: ['OK']
+          });
+          await alert.present();
+        }
+      } catch (e) {
+        console.error('Error inesperado en login.page:', e);
       }
-    } catch (e) {
-      console.error('Error inesperado en login.page:', e);
+    } else {
+      alert('Campos vacíos');
     }
-  } else {
-    alert('Campos vacíos');
   }
-}
+
+  goToDashboard()
+  {
+    this.router.navigate(['/dashboard']);
+  }
 
   // 👈 Solución al error TS2339: Definir la función que falta
   goToWelcome() {
